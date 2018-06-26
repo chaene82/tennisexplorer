@@ -40,5 +40,5 @@ def test_command_line_interface():
 
 def test_player():
     """Test player part"""
-    df_player = get_te_player()[:1]
-    assert df_player.player_name == 'Laaksonen Henri'
+    df_player = get_te_player()
+    assert len(df_player) == 1
