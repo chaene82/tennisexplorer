@@ -5,3 +5,6 @@
 __author__ = """Christoph Haene"""
 __email__ = 'christoph.haene@gmx.com'
 __version__ = '0.1.0'
+
+
+from .tennisexplorer import get_te_player

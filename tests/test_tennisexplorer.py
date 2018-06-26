@@ -9,6 +9,7 @@ from click.testing import CliRunner
 
 from tennisexplorer import tennisexplorer
 from tennisexplorer import cli
+from tennisexplorer import get_te_player
 
 
 @pytest.fixture
@@ -36,3 +37,8 @@ def test_command_line_interface():
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output
+
+def test_player():
+    """Test player part"""
+    df_player = get_te_player()
+    assert df_player.player_name == 'Laaksonen Henri'
