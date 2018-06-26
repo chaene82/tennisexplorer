@@ -1,4 +1,4 @@
 
 beautifulsoup4==4.6.0 
-urllib==1.22
+urllib3==1.22
 pandas==0.20.3
