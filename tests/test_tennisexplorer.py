@@ -42,3 +42,9 @@ def test_player():
     """Test player part"""
     df_player = get_te_player()
     assert len(df_player) == 1
+    
+    
+def test_player():
+    """Test player part"""
+    matchlist = get_te_matchlist(year = '2018', month = '05', day = '07', match_type="atp-single")
+    assert len(matchlist) == 174   
