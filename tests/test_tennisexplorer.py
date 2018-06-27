@@ -9,7 +9,7 @@ from click.testing import CliRunner
 
 from tennisexplorer import tennisexplorer
 from tennisexplorer import cli
-from tennisexplorer import get_te_player
+from tennisexplorer import get_te_player, get_te_matchlist
 
 
 @pytest.fixture
@@ -44,7 +44,7 @@ def test_player():
     assert len(df_player) == 1
     
     
-def test_player():
+def test_matchlist():
     """Test player part"""
     matchlist = get_te_matchlist(year = '2018', month = '05', day = '07', match_type="atp-single")
     assert len(matchlist) == 174   
