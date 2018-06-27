@@ -7,4 +7,4 @@ __email__ = 'christoph.haene@gmx.com'
 __version__ = '0.1.0'
 
 
-from .tennisexplorer import get_te_player
+from .tennisexplorer import get_te_player, get_te_matchlist
