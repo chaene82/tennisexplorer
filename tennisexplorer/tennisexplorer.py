@@ -52,69 +52,6 @@ def get_te_matchlist(year = '2018', month = '05', day = '07', match_type="atp-si
     return result
 
 
-def get_te_match(match_url = "/match-detail/?id=1629042"):
-
-    url = 'http://www.tennisexplorer.com/' + str(match_url) 
-    
-    req = urllib.request.Request(url)
-    #http://live-tennis.eu/en/official-atp-ranking
-    response = urllib.request.urlopen(req)
-
-    html = response.read()
-
-    soup = BeautifulSoup(html, "html.parser")
-    
-    soup.unicode
-    
-    odds_table = soup.findAll('table')[5]
-    
-    odds_trs = odds_table.findAll('tr')
-    odds_home = np.nan
-    odds_away = np.nan
-    
-    
-    for tr in odds_trs:
-        if (tr.a) :
-            if 'Pinnacle' in tr.a.text :
-                tds_home = tr.findAll('td', {'class' : 'k1'})
-                tds_away = tr.findAll('td', {'class' : 'k2'})
-                odds_home = float(tds_home[0].find(text=True))
-                odds_away = float(tds_away[0].find(text=True))
-               
-       
-    if soup.find(text=re.compile(r'hard')) :  
-        #print("hard surface")
-        surface = 'hard'
-    elif soup.find(text=re.compile(r'clay')) :  
-        #print("clay surface")  
-        surface = 'clay'        
-    elif soup.find(text=re.compile(r'grass')) :  
-        #print("grass surface")          
-        surface = 'grass'        
-    elif soup.find(text=re.compile(r'indoor')) :  
-        #print("indoor surface") 
-        surface = 'indoor'                
-    else :
-        #print("surface unknown")        
-        surface = 'unknown'                
-                            
-    ## putting data together    
-    dict = { 'match_link' : match_url,
-             'surface'    : surface,
-             'player1_pin_odds' : odds_home,
-             'player2_pin_odds' : odds_away,
-             
-             #'html'       : html
-            }
-       
-    data = pd.DataFrame([dict])
-    
-    #store_html_file(html, match_url)
-    
-    
-            
-    return data
-
 
 
 def get_te_match_json(match_url = "/match-detail/?id=1680141", matchtype='single', tour='atp'):
@@ -465,6 +402,68 @@ def get_te_player(player_url = "/player/laaksonen/"):
     data = pd.DataFrame([dict])
         
     result = result.append(data, ignore_index=True) 
+    
+    
+    return result
+
+
+## function for getting rankings
+    
+def get_te_ranking(year = '2018', month = '01', day = '22', page = 1):
+
+    url = 'http://www.tennisexplorer.com/ranking/atp-men/' + year + '?date=' + year + '-' + month + '-' + day +'&page=' + str(page)
+    
+    req = urllib.request.Request(url)
+    #http://live-tennis.eu/en/official-atp-ranking
+    response = urllib.request.urlopen(req)
+
+    html = response.read()
+
+    soup = BeautifulSoup(html, "html.parser")
+    
+    soup.unicode
+    
+    table = soup.find("tbody", attrs={"class": "flags"})
+    
+    if table is None:
+        return pd.DataFrame()
+    
+    
+    trs = table.findAll('tr')
+
+    
+    result = pd.DataFrame()
+    
+    strDate = day + '/' + month + '/' + year
+    StartDate = datetime.strptime(strDate, "%d/%m/%Y")
+    
+    for tr in trs :
+        #print(row)
+        
+#        if (tr.find("td" , attrs={"class": "no-data first"})) != None :
+#            break
+
+        player = tr.find("td" , attrs={"class": "t-name"}).text.strip() 
+        if tr.find("td" , attrs={"class": "t-name"}).a :
+           player_link = tr.find("td" , attrs={"class": "t-name"}).a.attrs['href'].strip()
+        else :
+           player_link = ''
+        rank = tr.find("td" , attrs={"class": "rank first"}).text.strip() 
+        points = tr.find("td" , attrs={"class": "long-point"}).text.strip() 
+        
+
+
+        ## putting data together    
+        dict = { 'StartDate' : StartDate,
+                 'player' : player,
+                 'player_link' : player_link,
+                 'rank' : rank, 
+                 'points' : points
+                }
+        
+        data = pd.DataFrame([dict])
+        
+        result = result.append(data, ignore_index=True) 
     
     
     return result

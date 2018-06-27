@@ -10,7 +10,7 @@ from click.testing import CliRunner
 from tennisexplorer import tennisexplorer
 from tennisexplorer import cli
 from tennisexplorer import get_te_player
-from tennisexplorer import get_te_matchlist, get_te_match, get_te_match_json
+from tennisexplorer import get_te_matchlist, get_te_match, get_te_match_json, get_te_ranking
 import pandas
 
 
@@ -49,14 +49,14 @@ def test_player():
 def test_matchlist():
     """Test player part"""
     matchlist = get_te_matchlist(year = '2018', month = '05', day = '07', match_type="atp-single")
-    assert len(matchlist) == 174   
-    
-def test_match():
-    """Test player part"""
-    df = get_te_match()
-    assert type(df).__name__ == 'DataFrame'       
+    assert len(matchlist) == 174    
     
 def test_match_json():
-    """Test player part"""
+    """Test match part"""
     json = get_te_match_json()
-    assert type(json).__name__ == 'dict'     
+    assert type(json).__name__ == 'dict'
+    
+def test_ranking():
+    """Test ranking part"""
+    ranking = get_te_ranking()
+    assert type(ranking).__name__ == 'DataFrame'    
