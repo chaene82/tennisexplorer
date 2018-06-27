@@ -10,7 +10,7 @@ from click.testing import CliRunner
 from tennisexplorer import tennisexplorer
 from tennisexplorer import cli
 from tennisexplorer import get_te_player
-from tennisexplorer import get_te_matchlist, get_te_match, get_te_match_json, get_te_ranking
+from tennisexplorer import get_te_matchlist,  get_te_match_json, get_te_ranking
 import pandas
 
 
