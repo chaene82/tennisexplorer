@@ -9,7 +9,9 @@ from click.testing import CliRunner
 
 from tennisexplorer import tennisexplorer
 from tennisexplorer import cli
-from tennisexplorer import get_te_player, get_te_matchlist
+from tennisexplorer import get_te_player
+from tennisexplorer import get_te_matchlist, get_te_match, get_te_match_json
+import pandas
 
 
 @pytest.fixture
@@ -48,3 +50,13 @@ def test_matchlist():
     """Test player part"""
     matchlist = get_te_matchlist(year = '2018', month = '05', day = '07', match_type="atp-single")
     assert len(matchlist) == 174   
+    
+def test_match():
+    """Test player part"""
+    df = get_te_match()
+    assert type(df).__name__ == 'DataFrame'       
+    
+def test_match_json():
+    """Test player part"""
+    json = get_te_match_json()
+    assert type(json).__name__ == 'dict'     
