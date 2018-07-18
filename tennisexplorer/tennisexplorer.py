@@ -5,7 +5,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 import pytz
 import numpy as np
 
@@ -14,9 +14,11 @@ timezone = pytz.timezone("Europe/Zurich")
 
 ## Functions for getting Match information
 
-def get_te_matchlist(year = '2018', month = '05', day = '07', match_type="atp-single"):
+
+
+def get_te_matchlist_all(year = '2018', month = '05', day = '07', match_type="atp-single"):
     """
-    get a list if events on a given day
+    get a list if events on a given day including matchlink, date, time and status
     
     """
 
@@ -36,18 +38,37 @@ def get_te_matchlist(year = '2018', month = '05', day = '07', match_type="atp-si
     
     trs = table.findAll('tr')
     
-    result = []
+    result = pd.DataFrame()
           
     for tr in trs :
         #print(row)
 
-        
         ## searching for match link
+        
         
         if 'bott' in tr['class'] :   
             match_link = tr.find("td", text="info").a.attrs['href'].strip()
-            result.append(match_link)
-            continue
+            match_time = tr.find("td", {'class' : 'first time'}).text[0:5]
+            if tr.find("td", {'class' : 'result'}):
+                status = 'complete'
+            else :
+                status = 'planned'
+            
+
+            
+            ## putting data together    
+            dict = { 'match_link' : match_link,
+                     'status' : status,
+                    'time'   : match_time,
+                    'date'   : year + '-' + month + '-' + day
+                    }
+       
+            data = pd.DataFrame([dict])
+        
+            result = result.append(data, ignore_index=True) 
+            
+            
+
         
     return result
 
