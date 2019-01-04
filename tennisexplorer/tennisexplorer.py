@@ -177,40 +177,45 @@ def get_te_match_json(match_url = "/match-detail/?id=1680141", matchtype='single
     thead_result = center.find("thead")
     td_result_sets  = thead_result.find("td").text.split("(")[0]
     if td_result_sets != '\xa0' :
-        td_result_games = thead_result.find("td").text.split("(")[1][:-1]
-        sets = td_result_games.split(',')
+        try :
+            td_result_games = thead_result.find("td").text.split("(")[1][:-1]
+            sets = td_result_games.split(',')
+
+        
     
         
         
-        player_left_sets = td_result_sets[0:1]
-        player_right_sets = td_result_sets[4:5]
-        
-        sets_player_left = {}
-        sets_player_right = {}
-        i = 0
-        for set in sets :
-            i = i + 1
-            set_text = str(i)
-            sets_player_left.update({set_text : int(set.split('-')[0].strip()[0:1])})
-            sets_player_right.update({set_text : int(set.split('-')[1].strip()[0:1])})
-        
-        player1 = {'sets' : player_left_sets, 'set_results' : sets_player_left}
-        player2 = {'sets' : player_right_sets, 'set_results' : sets_player_right}
+            player_left_sets = td_result_sets[0:1]
+            player_right_sets = td_result_sets[4:5]
             
-        
-        if change_sort :
-            player1_result = {'sets' : player_right_sets, 'set_results' : sets_player_right}
-            player2_result = {'sets' : player_left_sets, 'set_results' : sets_player_left}    
-            result = td_result_sets[::-1]
-        else :
-            player1_result = {'sets' : player_left_sets, 'set_results' : sets_player_left}
-            player2_result = {'sets' : player_right_sets, 'set_results' : sets_player_right}
-            result = td_result_sets
-        
-        event['result'] = {'result' : result}
-        event['result']['player1'] = player1_result
-        event['result']['player2'] = player2_result
-        event['status'] = 'complete'
+            sets_player_left = {}
+            sets_player_right = {}
+            i = 0
+            for set in sets :
+                i = i + 1
+                set_text = str(i)
+                sets_player_left.update({set_text : int(set.split('-')[0].strip()[0:1])})
+                sets_player_right.update({set_text : int(set.split('-')[1].strip()[0:1])})
+            
+            player1 = {'sets' : player_left_sets, 'set_results' : sets_player_left}
+            player2 = {'sets' : player_right_sets, 'set_results' : sets_player_right}
+                
+            
+            if change_sort :
+                player1_result = {'sets' : player_right_sets, 'set_results' : sets_player_right}
+                player2_result = {'sets' : player_left_sets, 'set_results' : sets_player_left}    
+                result = td_result_sets[::-1]
+            else :
+                player1_result = {'sets' : player_left_sets, 'set_results' : sets_player_left}
+                player2_result = {'sets' : player_right_sets, 'set_results' : sets_player_right}
+                result = td_result_sets
+            
+            event['result'] = {'result' : result}
+            event['result']['player1'] = player1_result
+            event['result']['player2'] = player2_result
+            event['status'] = 'complete'
+        except :
+            event['status'] = 'complete'
     else:
         event['status'] = 'planned'
         
@@ -254,30 +259,33 @@ def get_te_match_json(match_url = "/match-detail/?id=1680141", matchtype='single
         #if odds_table[0]['class'] == 'one' or odds_table[0]['class'] == 'two' : 
         
         odds = {}
-        for tr in odds_table:
-            if ((tr.a) and (tr['class'] == ['one'] or tr['class'] == ['two'])) :
-                bookie = tr.a.text.replace('\xa0','').lower()
-                odds_left = float(tr.findAll('td', {'class' : 'k1'})[0].find(text=True))
-                odds_right = float(tr.findAll('td', {'class' : 'k2'})[0].find(text=True))
-                if change_sort :
-                    player1_odds = odds_right
-                    player2_odds = odds_left
-                else :
-                    player1_odds = odds_left
-                    player2_odds = odds_right     
-                odds.update({bookie : {'player1' : player1_odds, 'player2' : player2_odds}})
-                #odds[bookie] = {'player1' : player1_odds, 'player2' : player2_odds}
-                #odds[bookie].update({'bookie' : bookie'player1' : player1_odds, 'player2' : player2_odds})
-                #odds[bookie].update({'player1' : player1_odds, 'player2' : player2_odds})
-                
-                #print(bookie, odds_left, odds_right)
-    #            if 'Pinnacle' in tr.a.text :
-    #                tds_home = tr.findAll('td', {'class' : 'k1'})
-    #                tds_away = tr.findAll('td', {'class' : 'k2'})
-    #                odds_home = float(tds_home[0].find(text=True))
-    #                odds_away = float(tds_away[0].find(text=True))
-                   
-        event['te_odds'] = {'result' : odds }
+        try :
+            for tr in odds_table:
+                if ((tr.a) and (tr['class'] == ['one'] or tr['class'] == ['two'])) :
+                    bookie = tr.a.text.replace('\xa0','').lower()
+                    odds_left = float(tr.findAll('td', {'class' : 'k1'})[0].find(text=True))
+                    odds_right = float(tr.findAll('td', {'class' : 'k2'})[0].find(text=True))
+                    if change_sort :
+                        player1_odds = odds_right
+                        player2_odds = odds_left
+                    else :
+                        player1_odds = odds_left
+                        player2_odds = odds_right     
+                    odds.update({bookie : {'player1' : player1_odds, 'player2' : player2_odds}})
+                    #odds[bookie] = {'player1' : player1_odds, 'player2' : player2_odds}
+                    #odds[bookie].update({'bookie' : bookie'player1' : player1_odds, 'player2' : player2_odds})
+                    #odds[bookie].update({'player1' : player1_odds, 'player2' : player2_odds})
+                    
+                    #print(bookie, odds_left, odds_right)
+        #            if 'Pinnacle' in tr.a.text :
+        #                tds_home = tr.findAll('td', {'class' : 'k1'})
+        #                tds_away = tr.findAll('td', {'class' : 'k2'})
+        #                odds_home = float(tds_home[0].find(text=True))
+        #                odds_away = float(tds_away[0].find(text=True))
+                       
+            event['te_odds'] = {'result' : odds }
+        except :
+            event['te_odds'] = None
     
     # Over,Under Odds
     if odds_ou != [] :
@@ -357,6 +365,8 @@ def get_te_match_json(match_url = "/match-detail/?id=1680141", matchtype='single
                 
                 
         event['te_odds']['correct_score'] =  odds 
+		
+    event['change_sort'] = change_sort
                 
     return event
 
