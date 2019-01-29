@@ -16,7 +16,7 @@ timezone = pytz.timezone("Europe/Zurich")
 
 
 
-def get_te_matchlist_all(year = '2018', month = '05', day = '07', match_type="atp-single"):
+def get_te_matchlist_all(year = '2019', month = '01', day = '29', match_type="wta-single"):
     """
     get a list if events on a given day including matchlink, date, time and status
     
@@ -34,38 +34,41 @@ def get_te_matchlist_all(year = '2018', month = '05', day = '07', match_type="at
     
     soup.unicode
     
-    table = soup.find("table", attrs={"class": "result"})
-    
-    trs = table.findAll('tr')
-    
+    tables = soup.findAll("table", attrs={"class": "result"})
+    #remove hte last entry, because its is "week tournements"
+    tables = tables[:-3]
+
     result = pd.DataFrame()
-          
-    for tr in trs :
-        #print(row)
+    for table in tables :
 
-        ## searching for match link
-        
-        
-        if 'bott' in tr['class'] :   
-            match_link = tr.find("td", text="info").a.attrs['href'].strip()
-            match_time = tr.find("td", {'class' : 'first time'}).text[0:5]
-            if tr.find("td", {'class' : 'result'}):
-                status = 'complete'
-            else :
-                status = 'planned'
-            
+        trs = table.findAll('tr')
+         
+        for tr in trs :
+            #print(row)
 
+            ## searching for match link
             
-            ## putting data together    
-            dict = { 'match_link' : match_link,
-                     'status' : status,
-                    'time'   : match_time,
-                    'date'   : year + '-' + month + '-' + day
-                    }
-       
-            data = pd.DataFrame([dict])
+            
+            if 'bott' in tr['class'] :   
+                match_link = tr.find("td", text="info").a.attrs['href'].strip()
+                match_time = tr.find("td", {'class' : 'first time'}).text[0:5]
+                if tr.find("td", {'class' : 'result'}):
+                    status = 'complete'
+                else :
+                    status = 'planned'
+                
+
+                
+                ## putting data together    
+                dict = { 'match_link' : match_link,
+                        'status' : status,
+                        'time'   : match_time,
+                        'date'   : year + '-' + month + '-' + day
+                        }
         
-            result = result.append(data, ignore_index=True) 
+                data = pd.DataFrame([dict])
+            
+                result = result.append(data, ignore_index=True) 
             
             
 
