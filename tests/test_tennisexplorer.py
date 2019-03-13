@@ -48,8 +48,8 @@ def test_player():
     
 def test_matchlist():
     """Test player part"""
-    matchlist = get_te_matchlist_all(year = '2018', month = '05', day = '07', match_type="atp-single")
-    assert len(matchlist) == 174    
+    matchlist = get_te_matchlist_all(year = '2019', month = '03', day = '13', match_type="atp-single")
+    assert len(matchlist) == 173    
     
 def test_match_json():
     """Test match part"""
