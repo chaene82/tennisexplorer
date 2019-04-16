@@ -22,11 +22,16 @@ def get_te_matchlist_all(year = '2019', month = '01', day = '29', match_type="wt
     
     """
 
+    result = pd.DataFrame()
     url = 'http://www.tennisexplorer.com/matches/?type=' + match_type + '&year' + year + '&month=' + month + '&day=' + day
     
     req = urllib.request.Request(url)
     #http://live-tennis.eu/en/official-atp-ranking
-    response = urllib.request.urlopen(req)
+    try :
+        response = urllib.request.urlopen(req)
+    except:
+        print("error getting events")
+        return result
 
     html = response.read()
 
@@ -38,7 +43,7 @@ def get_te_matchlist_all(year = '2019', month = '01', day = '29', match_type="wt
     #remove hte last entry, because its is "week tournements"
     tables = tables[:-3]
 
-    result = pd.DataFrame()
+    
     for table in tables :
 
         trs = table.findAll('tr')
